@@ -1,0 +1,35 @@
+version: "2"
+# ci concept staff
+services:
+  sonarqube:
+    image: sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://sonarqubedb:5432/sonar
+  sonarqubedb:
+    image: postgres
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+    volumes:
+      - ./sonarqubedb:/var/lib/postgresql
+  artifactory:
+    image: mattgruter/artifactory
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./artifactory/data:/artifactory/data
+      - ./artifactory/logs:/artifactory/data
+      - ./artifactory/backup:/artifactory/backup
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "8089:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins:/var/jenkins_home    
+  bamboo:
+    image: cptactionhank/atlassian-bamboo:latest
+    ports:
+      - "8085:8085"
